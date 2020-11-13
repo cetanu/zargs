@@ -1,8 +1,10 @@
 [package]
 authors = ["vsyrakis"]
+description = "A basic rewrite of xargs"
 edition = "2018"
 name = "zargs"
 version = "0.1.0"
+license = "MIT"
 
 [dependencies]
 clap = "3.0.0-beta.2"

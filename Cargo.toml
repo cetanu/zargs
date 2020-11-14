@@ -3,7 +3,7 @@ authors = ["vsyrakis"]
 description = "A basic rewrite of xargs"
 edition = "2018"
 name = "zargs"
-version = "0.1.0"
+version = "0.1.1"
 license = "MIT"
 
 [dependencies]

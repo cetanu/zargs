@@ -5,45 +5,43 @@ use std::io::{self, Read};
 use std::path::PathBuf;
 use std::process::Command;
 
+const HELP_ARG_FILE: &str = "Read args from a file";
+const HELP_DELIMITER: &str = "Split the args by a particular delimiter";
+const HELP_PARALLEL: &str = "The number of threads to run in parallel";
+const HELP_REPLACE: &str = "Replace occurences of this with args read from stdin";
+const HELP_COMMAND: &str = "The command to execute against the args";
+
 #[derive(Clap)]
 #[clap(version = "0.1.0", author = "Vasilios Syrakis <cetanu@gmail.com>")]
 struct Opts {
-    #[clap(short, long, about = "Read args from a file")]
+    #[clap(short, long, about = HELP_ARG_FILE)]
     arg_file: Option<PathBuf>,
 
-    #[clap(short, long, about = "Split the args by a particular delimiter")]
+    #[clap(short, long, about = HELP_DELIMITER)]
     delimiter: Option<char>,
 
-    #[clap(
-        short,
-        long,
-        default_value = "1",
-        about = "The number of threads to run in parallel"
-    )]
+    #[clap(short, long, default_value = "1", about = HELP_PARALLEL)]
     parallel: usize,
 
-    #[clap(
-        short,
-        long,
-        about = "Replace occurences of this with args read from stdin"
-    )]
+    #[clap(short, long, about = HELP_REPLACE)]
     replace: Option<String>,
 
-    #[clap(
-        multiple = true,
-        min_values = 1,
-        about = "The command to execute against the args"
-    )]
+    #[clap(multiple = true, min_values = 1, about = HELP_COMMAND)]
     command: Vec<String>,
+}
+
+fn set_max_parallel_threads(n: usize) -> () {
+    rayon::ThreadPoolBuilder::new()
+        .num_threads(n)
+        .build_global()
+        .unwrap();
 }
 
 fn main() -> io::Result<()> {
     let opts: Opts = Opts::parse();
 
-    rayon::ThreadPoolBuilder::new()
-        .num_threads(opts.parallel)
-        .build_global()
-        .unwrap();
+    let num_threads = opts.parallel.to_owned();
+    set_max_parallel_threads(num_threads);
 
     // I think original xargs uses \0 to check for null-terminated strings
     // This means that newlines are retained...

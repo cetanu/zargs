@@ -24,7 +24,7 @@ Example Usage
 -------------
 #### Replacing strings, in the target command, with piped arguments
 ```shell
-echo Vasilios | target/debug/zargs -r name echo "Hello, name!"
+echo Vasilios | zargs -r name echo "Hello, name!"
 Hello, Vasilios!
 ```
 

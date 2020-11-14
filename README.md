@@ -33,3 +33,28 @@ Hello, Vasilios!
 echo "write-output 'hello world :)'" | zargs powershell
 hello world :)
 ```
+
+Help prompt
+-----------
+
+```
+$ zargs --help
+zargs 0.1.1
+Vasilios Syrakis <cetanu@gmail.com>
+
+USAGE:
+    zargs [OPTIONS] [command]...
+
+ARGS:
+    <command>...    The command to execute against the args
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -a, --arg-file <arg-file>      Read args from a file
+    -d, --delimiter <delimiter>    Split the args by a particular delimiter
+    -p, --parallel <parallel>      The number of threads to run in parallel [default: 1]
+    -r, --replace <replace>        Replace occurences of this with args read from stdin
+```

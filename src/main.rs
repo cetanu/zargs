@@ -1,4 +1,5 @@
 use clap::Clap;
+use rayon::prelude::*;
 use std::fs::File;
 use std::io::{self, Read};
 use std::path::PathBuf;
@@ -15,10 +16,23 @@ struct Opts {
 
     #[clap(min_values = 1, about = "The command to execute against the args")]
     command: String,
+
+    #[clap(
+        short,
+        long,
+        default_value = "1",
+        about = "The number of threads to run in parallel"
+    )]
+    parallel: usize,
 }
 
 fn main() -> io::Result<()> {
     let opts: Opts = Opts::parse();
+
+    rayon::ThreadPoolBuilder::new()
+        .num_threads(opts.parallel)
+        .build_global()
+        .unwrap();
 
     // I think original xargs uses \0 to check for null-terminated strings
     // This means that newlines are retained...
@@ -56,13 +70,14 @@ fn main() -> io::Result<()> {
     }
 
     let delimited: Vec<String> = args.split(delimiter).map(|s| s.to_string()).collect();
-    for arg in delimited {
+
+    delimited.par_iter().for_each(|arg| {
         // When .status() is used, the stdout/stderr are inherited
         Command::new(&command)
             .args(&piped_args)
             .arg(arg)
             .status()
             .expect("Failed to execute process");
-    }
+    });
     Ok(())
 }

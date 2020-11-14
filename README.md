@@ -22,7 +22,14 @@ cargo install zargs
 
 Example Usage
 -------------
+#### Replacing strings, in the target command, with piped arguments
 ```shell
-:: echo "write-output 'hello world :)'" | zargs powershell
+echo Vasilios | target/debug/zargs -r name echo "Hello, name!"
+Hello, Vasilios!
+```
+
+#### Should work on Windows!
+```shell
+echo "write-output 'hello world :)'" | zargs powershell
 hello world :)
 ```
